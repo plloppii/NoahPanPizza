@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+import os
 
 def register(request):
 	if(request.method == 'POST'):
@@ -27,12 +28,16 @@ def profile(request):
 		p_form = ProfileUpdateForm(request.POST, 
 									request.FILES,
 								 	instance = request.user.profile)
-		#Record the previous username
+
+		#Record the path of the previous image and delete later if new img is uploaded.
+		prev_imagepath = request.user.profile.image.path
+		#Record the previous username and email to be reverted if invalid fields.
 		prev_username = request.user.username
 		prev_email = request.user.email
 		if u_form.is_valid() and p_form.is_valid():
 			u_form.save()
 			p_form.save()
+			os.remove(prev_imagepath)
 			messages.success(request, f'Your account has been updated!!')
 			return redirect('profile')
 		else:
@@ -43,7 +48,6 @@ def profile(request):
 		u_form = UserUpdateForm(instance = request.user)
 		p_form = ProfileUpdateForm(instance = request.user.profile)
 
-	print(request.user.username)
 	context = {
 		"u_form" : u_form,
 		"p_form" : p_form 
