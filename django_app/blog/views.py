@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from blog.models import Post
 from django.contrib.auth.models import User
@@ -26,6 +26,16 @@ class PostListView(ListView):
 	context_object_name = "posts"
 	ordering = ["-date_posted"] #order posts backwards
 	# ordering = ["date_posted"] 
+	paginate_by = 8
+
+class UserPostListView(ListView):
+	model = Post
+	template_name = "blog/user_posts.html"
+	context_object_name = "posts"
+	paginate_by = 8
+	def get_queryset(self):
+		user = get_object_or_404(User, username=self.kwargs.get('username'))
+		return Post.objects.filter(author=user).order_by('-date_posted')
 
 #Using default naming convension of the DetailView so we can cut down on code. 
 class PostDetailView(DetailView):
