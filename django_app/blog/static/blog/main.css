@@ -16,14 +16,18 @@ ul {
   background-color: #000000;
 }
 
+.navbar .navbar-brand{
+  font-weight: bold;
+  font-size: 1.9rem;
+}
 
-  .navbar .navbar-nav {
-    float: none;
-    vertical-align: top;
-  }
-  .navbar .navbar-collapse {
-    text-align: left;
-  }
+.navbar .navbar-nav {
+  float: none;
+  vertical-align: top;
+}
+.navbar .navbar-collapse {
+  text-align: left;
+}
 
 
 .site-header .navbar-nav .nav-link {
