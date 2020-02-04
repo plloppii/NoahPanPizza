@@ -1,7 +1,7 @@
 body {
   background: #fafafa;
   color: #333333;
-  margin-top: 5rem;
+  margin-top: 0rem;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -29,6 +29,16 @@ ul {
   text-align: left;
 }
 
+.navbar{
+  position: relative;
+}
+
+.site-branding{
+  background-color: red;
+  text-align: center;
+  height: 100px;
+  width: 100%;
+}
 
 .site-header .navbar-nav .nav-link {
   color: #cbd5db;

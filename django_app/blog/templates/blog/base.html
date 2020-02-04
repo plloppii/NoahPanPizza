@@ -12,18 +12,27 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
 
-	{% if title %}
-		<title> The Cast Iron - {{ title }}</title>
-	{% else %}
-		<title> The Cast Iron </title>
-	{% endif %}
+    <link rel="stylesheet" href="{% static '/blog/js/main.js'%}">
+
+    {% if title %}
+      <title> The Cast Iron - {{ title }}</title>
+    {% else %}
+      <title> The Cast Iron </title>
+    {% endif %}
 
 
   </head>
 
   <body>
   	<header class="site-header">
-      <nav class="navbar navbar-dark navbar-expand-md bg-steel fixed-top justify-content-between">
+
+      <div class="container site-branding">
+          <h1 class="site-title">
+            <a href="{% url 'blog-home' %}"> Code. Pizza. <a>
+          </h1>
+      </div>
+
+      <nav class="navbar navbar-dark navbar-expand-md bg-steel fixed-top">
         <div class="container">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle">
                 <span class="navbar-toggler-icon"></span>
