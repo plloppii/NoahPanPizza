@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from projects import Project
+from projects.models import Project
 
 # Create your views here.
 
@@ -10,4 +10,4 @@ def projects(request):
         'projects': Project.objects.all()
     }
 
-    return render(request, 'projects.html', context)
+    return render(request, 'projects/projects.html', context)
