@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from blog.models import Post
 from django.contrib.auth.models import User
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.views.generic import (
 	ListView, 
 	DetailView, 
@@ -28,6 +28,7 @@ class PostListView(ListView):
 	# ordering = ["date_posted"] 
 	paginate_by = 8
 
+#Filter Posts by only a single user. 
 class UserPostListView(ListView):
 	model = Post
 	template_name = "blog/user_posts.html"
@@ -63,6 +64,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 		if self.request.user == post.author:
 			return True
 		return False
+
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 	model=Post
 	success_url = '/'
@@ -76,7 +78,7 @@ def about(request):
 	# context = {
 	# 	'title': 'Title of the about page'
 	# }
-	return render(request, 'blog/about.html', { 'title':'about' })
+	return render(request, 'about.html', { 'title':'about' })
 
 
 #Class based views:
