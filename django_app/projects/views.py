@@ -33,7 +33,7 @@ class ProjectDetailView(DetailView):
     model = Project
 class ProjectCreateView(StaffRequiredMixin, CreateView):
     model = Project
-    # fields = ['title', 'description', 'project_type', 'content', 'images']
+    # fields = ['title', 'project_type', 'description', 'content', 'images']
     form_class = CreateProjectForm
     template_name = "projects/create_project.html"
     success_url = reverse_lazy("projects")
