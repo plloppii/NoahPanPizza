@@ -1,0 +1,198 @@
+@font-face {
+  font-family: Lato-Regular;
+  src: local('Lato-Regular'),
+  url('Lato-Regular.ttf') format("truetype");
+}
+
+body {
+  background: #fafafa;
+  color: #333333;
+  margin-top: 0rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #444444;
+}
+h1 { font-size: 56px;}
+h2 { font-size: 36px;}
+h3 { font-size: 28px;}
+h4 { font-size: 24px;}
+h5 { font-size: 20px;}
+h6 { font-size: 16px;}
+
+ul {
+  margin: 0;
+}
+
+*{
+	font-family: Lato-Regular;
+}
+
+/* Used for code snippets */
+pre {
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  border-left: 3px solid #f36d33;
+  color: #666;
+  page-break-inside: avoid;
+  font-family: monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 1.6em;
+  max-width: 100%;
+  overflow: auto;
+  padding: 1em 1.5em;
+  display: block;
+  word-wrap: break-word;
+}
+
+a:hover{
+  text-decoration: none !important;
+  color: #ffffff;
+}
+
+.content-section {
+  background: #ffffff;
+  padding: 10px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+.carousel-inner{
+  width: 100%;
+  height: 100%;
+}
+
+
+/* Style all font awesome icons */
+.fa {
+  font-size: 20px;
+  color: #333333;
+  text-align: center;
+}
+
+/* Add a hover effect if you want */
+.fa:hover {
+  color: #333333;
+  opacity: 0.7;
+}
+
+
+/* Navigation bar CSS */
+
+.navbar .navbar-brand{
+  color: #000000;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.navbar{
+  float: none;
+}
+.navbar .navbar-collapse {
+  text-align: left;
+}
+
+.navbar{
+  position: relative;
+}
+
+.nav-item{
+  color: #0000004f;
+}
+
+.nav-item:hover {
+  color: #6d3500;
+}
+
+.nav-item.active {
+  font-weight: 500;
+}
+
+/* Home CSS Elements */
+
+.banner{
+  position: relative;
+  overflow: hidden;
+  height: 300px;
+}
+.banner-img{
+  position: absolute;
+  top: -40%;
+  width: 100%;
+}
+
+/* Projects CSS Elements */
+/* .thumbnail{
+  position: relative;
+  overflow: hidden;
+  height: 300px;
+}
+.thumbnail-img{
+  position: absolute;
+  width: 100%; 
+} */
+.thumbnail-img{
+  object-fit: contain;
+  height: 300px;
+}
+
+.tag{
+	display:inline-block;
+	color:#fff;
+	background-color: #888;
+	border-radius: 5px;
+	margin: 2px;
+	padding: 2px 5px;
+	font-size: 12px;	
+}
+
+/* Blog CSS Elements */
+
+.post-title {
+  color: #444444;
+}
+
+a.post-title:hover {
+  color: #cc442c;
+  text-decoration: none;
+}
+
+.article-content {
+  white-space: pre-line;
+}
+
+.article-img {
+  height: 65px;
+  width: 65px;
+  margin-right: 16px;
+}
+
+.article-metadata {
+  padding-bottom: 1px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #e3e3e3
+}
+
+.article-metadata a:hover {
+  color: #333;
+  text-decoration: none;
+}
+
+.article-svg {
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.account-img {
+  height: 125px;
+  width: 125px;
+  margin-right: 20px;
+  margin-bottom: 16px;
+}
+
+.account-heading {
+  font-size: 2.5rem;
+}

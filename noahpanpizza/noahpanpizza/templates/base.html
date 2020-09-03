@@ -2,101 +2,61 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="{% static 'blog/main.js' %}"></script>
+  <!-- Font Awesome  -->
+  <script src="https://kit.fontawesome.com/59c4aeccda.js" crossorigin="anonymous"></script>
 
-    {% if title %}
-      <title> NPizza - {{ title }}</title>
-    {% else %}
-      <title> NPizza </title>
-    {% endif %}
+  <link rel="stylesheet" type="text/css" href="{% static 'noahpanpizza/main.css' %}">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="{% static 'noahpanpizza/main.js' %}"></script>
+
+  {% if title %}
+  <title> NPizza - {{ title }}</title>
+  {% else %}
+  <title> NPizza </title>
+  {% endif %}
 
 
-  </head>
+</head>
 
-  <body>
-     <div class="" id='banner'>
-          <h1 class="display-3">
-            <a href="#" class="brandtext"> noah. pan. pizza. <a>
-          </h1>
+<body>
+  <header class="site-header">
+    {% include 'navbar.html' %}
+  </header>
+
+  {% block mainbody %}
+  <main role="main" class="container">
+
+    <div>
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
       </div>
-  	<header class="site-header">
+      {% endfor %}
+      {% endif %}
 
-      <nav class="navbar navbar-light bg-light navbar-expand-md fixed-top">
-        <div class="container">
-            <button class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target=".dual-nav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse dual-nav align-items-center w-50 order-1 order-md-0">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link pl-0" href="{% url 'projects' %}">projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link pl-0" href="{% url 'blog-home' %}">blog</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">shop</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'blog-about' %}">about</a>
-                    </li>
-                </ul>
-            </div>
- 
-            <div class="navbar-collapse collapse dual-nav w-50 order-2">
-                <ul class="nav navbar-nav ml-auto">
-                  {% if user.is_authenticated %}
-
-                    <li class="nav-item">
-                      <a class="nav-link" href="{% url 'post-create' %}">new post</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="{% url 'profile' %}">profile</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="{% url 'logout' %}">logout</a>
-                    </li>
-                  {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"> login </a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"> register </a></li>
-                  {% endif %}
-                </ul>
-            </div>
-        </div>
-      </nav>
-
-  	</header>
-
-    {% block mainbody %}
-  	<main role="main" class="container">
-      <div class="row">
-
-        <div class="col-md">
-          {% if messages %}
-            {% for message in messages %}
-              <div class="alert alert-{{ message.tags }}"> 
-                {{ message }}
-              </div>
-            {% endfor %}
-          {% endif %}
-          {% block content %}
-          {% endblock content%}
-        </div>
+      {% block content %}
+      {% endblock content%}
+    </div>
 
 
-        <!-- <div class="col-md-4">
+    <!-- <div class="col-md-4">
           <div class="content-section">
             <h3>Our Sidebar</h3>
             <p class='text-muted'>You can put any information here you'd like.
@@ -110,15 +70,33 @@
           </div>
         </div> -->
 
-      </div>
-    </main>
-    {% endblock mainbody %}
+  </main>
+  {% endblock mainbody %}
 
+  <footer class="site-footer container">
+    <hr>
+    <div class="row justify-content-center">
+      <h6><small>ⓒ Noah Pan 2020</small></h6>
+    </div>
+    <div class="row justify-content-center">
+      <a href="http://www.linkedin.com/in/noahpan323/" class="fa fa-linkedin fa-fw"></a>
+      <a href="{% url 'contact' %}" class="fa fa-envelope fa-fw"></a>
+      <a href="http://github.com/plloppii" class="fa fa-github-alt fa-fw"></a>
+    </div>
+    <br>
+  </footer>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  </body>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>
