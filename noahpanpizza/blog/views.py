@@ -18,11 +18,11 @@ def home(request):
 	context = { 
 		"posts" : Post.objects.all()
 	}
-	return render(request, 'blog/home.html', context) #context will be avalible in templates
+	return render(request, 'blog/post_list.html', context) #context will be avalible in templates
 
 class PostListView(ListView):
 	model = Post
-	template_name = "blog/home.html"
+	template_name = "blog/post_list.html"
 	context_object_name = "posts"
 	ordering = ["-date_posted"] #order posts backwards
 	# ordering = ["date_posted"] 
@@ -41,6 +41,7 @@ class UserPostListView(ListView):
 #Using default naming convension of the DetailView so we can cut down on code. 
 class PostDetailView(DetailView):
 	model = Post
+	
 class PostCreateView(LoginRequiredMixin, CreateView):
 	model = Post
 	fields = ['title', 'content']
@@ -73,12 +74,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 		if self.request.user == post.author:
 			return True
 		return False
-
-def about(request):
-	# context = {
-	# 	'title': 'Title of the about page'
-	# }
-	return render(request, 'about.html', { 'title':'about' })
 
 
 #Class based views:
