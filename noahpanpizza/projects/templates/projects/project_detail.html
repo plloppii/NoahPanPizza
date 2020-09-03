@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if project.thumbnail %}
+<div class="banner">
+    <img class="img-fluid rounded" src="{{project.thumbnail.url}}" alt="projectthumbnail">
+</div>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-end">
+    <h2 class="mt-4"> {{ project.title }} </h2>
+    {% if user.is_authenticated %}
+    <div>
+        <a class="btn btn-secondary btn-sm" href="{% url 'project-update' project.id project.slug %}">Edit</a>
+        <a class="btn btn-danger btn-sm" href="{% url 'project-delete' project.id project.slug %}">Delete</a>
+    </div>
+    {% endif %}
+</div>
+
+
+<small class="text-muted">Posted on {{project.date_posted}}</small>
+<p>
+    {{project.content|safe}}
+</p>
+{% endblock content %}

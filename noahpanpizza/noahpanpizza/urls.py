@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.views.generic import TemplateView
 from users import views as user_views
 from projects import views as project_views
 from django.conf import settings
@@ -23,8 +24,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('taggit_autosuggest/', include('taggit_autosuggest.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('register/', user_views.register, name ="register"),
     path('profile/', user_views.profile, name="profile"),
+    path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
     path('login/',auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/',auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
     path('password-reset/', 
@@ -39,8 +44,10 @@ urlpatterns = [
     path('password-reset-complete/', 
         auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), 
         name='password_reset_complete'),
+    path('contact/', include('contact.urls')),
     path('projects/', include('projects.urls')),
-    path('', include('blog.urls')),
+    path('blog/', include('blog.urls')),
+    path('', include('frontend.urls')),
     path('', include("leads.urls")),
 ]
 
