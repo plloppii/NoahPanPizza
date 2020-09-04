@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, UserPostListView
+from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView
 
 urlpatterns = [
     # path('', views.home, name= 'blog-home'),
@@ -9,7 +9,6 @@ urlpatterns = [
     path('new/',PostCreateView.as_view(), name='post-create'),
     path('<int:pk>/<slug:slug>/update/',PostUpdateView.as_view(), name='post-update'),
     path('<int:pk>/<slug:slug>/delete/',PostDeleteView.as_view(), name='post-delete'),
-    path('user/<str:username>', UserPostListView.as_view(), name='user-posts'),
 ]
 
 #Class based views look for the following template naming convention

@@ -28,21 +28,15 @@ class PostListView(ListView):
 	# ordering = ["date_posted"] 
 	paginate_by = 8
 
-#Filter Posts by only a single user. 
-class UserPostListView(ListView):
-	model = Post
-	template_name = "blog/user_posts.html"
-	context_object_name = "posts"
-	paginate_by = 8
-	def get_queryset(self):
-		user = get_object_or_404(User, username=self.kwargs.get('username'))
-		return Post.objects.filter(author=user).order_by('-date_posted')
+class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff
 
 #Using default naming convension of the DetailView so we can cut down on code. 
 class PostDetailView(DetailView):
 	model = Post
-	
-class PostCreateView(LoginRequiredMixin, CreateView):
+
+class PostCreateView(StaffRequiredMixin, CreateView):
 	model = Post
 	fields = ['title', 'content']
 	def form_valid(self, form):

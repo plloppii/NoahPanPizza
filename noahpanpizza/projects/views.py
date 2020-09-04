@@ -14,10 +14,6 @@ from django.views.generic import (
 from .forms import CreateProjectForm
 # Create your views here.
 
-class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
-    def test_func(self):
-        return self.request.user.is_staff
-
 class ProjectListView(ListView):
     model = Project
     template_name = "projects/project_list.html"
@@ -32,6 +28,10 @@ class ProjectTagView(ListView):
         print(self.kwargs)
         tags = Tag.objects.filter(slug=self.kwargs.get('tagslug')).values_list('name', flat=True)
         return Project.objects.filter(tags__name__in=tags)
+
+class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff
 
 class ProjectDetailView(DetailView):
     model = Project
@@ -54,19 +54,14 @@ class ProjectCreateView(StaffRequiredMixin, CreateView):
         else:
             return render(request, self.template_name, {'form': form})
 
-class ProjectUpdateView(UpdateView):
+class ProjectUpdateView(StaffRequiredMixin, UpdateView):
     model=Project
     form_class = CreateProjectForm
-class ProjectDeleteView(DeleteView):
+    
+class ProjectDeleteView(StaffRequiredMixin, DeleteView):
     model=Project
     success_url='/'
     
-
-    # def form_valid(self, form):
-    #     obj = form.save(commit= False)
-    #     obj.save()
-
-
 
 
     
