@@ -8,7 +8,7 @@ from crispy_forms.layout import Layout, Submit, Row, Column
 class CreateProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['title', 'description', 'content', 'thumbnail', 'tags']
+        fields = ['title', 'description', 'content', 'thumbnail', 'tags', 'active', 'featured']
         widgets = {
             'title': forms.TextInput(attrs={'placeholder':'Project Title'}),
             'project_type': forms.TextInput(attrs={'placeholder':'Project Meta Tags'}),

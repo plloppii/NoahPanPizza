@@ -46,28 +46,29 @@ class PostCreateView(StaffRequiredMixin, CreateView):
 #LoginRequired Mixin is similar to the decorators of function based views.
 #It requires the user to be logged in to update the posts.
 #UserPassesTestMixin calls test_func, that checks requirements. 
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class PostUpdateView(StaffRequiredMixin, UpdateView):
 	model = Post
-	fields = ['title', 'content']
-	#Function tells who the author is of the post (who is the current user.)
-	def form_valid(self, form):
-		form.instance.author = self.request.user
-		return super().form_valid(form)
-	#test_func does not allow users to delete other peoples posts.
-	def test_func(self):
-		post = self.get_object()
-		if self.request.user == post.author:
-			return True
-		return False
+	fields = ['title', 'content', 'active', 'featured']
 
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+	#Function tells who the author is of the post (who is the current user.)
+	# def form_valid(self, form):
+	# 	form.instance.author = self.request.user
+	# 	return super().form_valid(form)
+	# #test_func does not allow users to delete other peoples posts.
+	# def test_func(self):
+	# 	post = self.get_object()
+	# 	if self.request.user == post.author:
+	# 		return True
+	# 	return False
+
+class PostDeleteView(StaffRequiredMixin, DeleteView):
 	model=Post
 	success_url = '/'
-	def test_func(self):
-		post = self.get_object()
-		if self.request.user == post.author:
-			return True
-		return False
+	# def test_func(self):
+	# 	post = self.get_object()
+	# 	if self.request.user == post.author:
+	# 		return True
+	# 	return False
 
 
 #Class based views:
