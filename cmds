@@ -1,0 +1,32 @@
+apt-get update && apt-get upgrade
+
+#Setting up hostname
+hostnamectl set-hostname django-server
+nano /etc/hosts
+# Add <ip-addr> <host-name>
+
+#Add user
+adduser <user>
+adduser <user> sudo
+
+#Set up ssh keys
+mkdir -p ~/.ssh
+#In development directory
+ssh-keygen -b 4096
+scp ~/.ssh/id_rsa.pub <user>@<ip-addr>:~/.ssh/authorized_keys
+#On server
+chmod 700 ~/.ssh/
+chmod 600 ~/.ssh/*
+sudo nano /etc/ssh/sshd_config
+# PermitRootLogin False
+# PasswordAuthentication no
+sudo systemctl restart sshd
+
+#Firewall
+sudo apt-get install ufw
+sudo ufw default allow outgoing
+sudo ufw default deny incoming
+sudo ufw allow ssh
+sudo ufw allow 8000
+sudo ufw enable
+sudo ufw status
