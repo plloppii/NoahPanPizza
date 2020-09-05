@@ -63,7 +63,7 @@ class PostUpdateView(StaffRequiredMixin, UpdateView):
 
 class PostDeleteView(StaffRequiredMixin, DeleteView):
 	model=Post
-	success_url = '/'
+	success_url = '/blog'
 	# def test_func(self):
 	# 	post = self.get_object()
 	# 	if self.request.user == post.author:

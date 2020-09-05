@@ -57,10 +57,10 @@ class ProjectCreateView(StaffRequiredMixin, CreateView):
 class ProjectUpdateView(StaffRequiredMixin, UpdateView):
     model=Project
     form_class = CreateProjectForm
-    
+
 class ProjectDeleteView(StaffRequiredMixin, DeleteView):
     model=Project
-    success_url='/'
+    success_url='/projects'
     
 
 
