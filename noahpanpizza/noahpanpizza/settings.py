@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'leads',
     'frontend',
     'contact',
+    'store',
     'rest_framework',
     'crispy_forms',
     'noahpanpizza',
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     'taggit_autosuggest',
     'ckeditor',
     'ckeditor_uploader',
+    'django_countries',
 ]
 
 MIDDLEWARE = [
@@ -80,6 +82,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'store.context_processors.current_cart',
             ],
         },
     },
@@ -147,7 +150,7 @@ MEDIA_URL = '/media/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL = 'blog-home'
+LOGIN_REDIRECT_URL = 'store'
 
 LOGIN_URL = 'login'
 

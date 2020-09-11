@@ -47,6 +47,7 @@ urlpatterns = [
     path('contact/', include('contact.urls')),
     path('projects/', include('projects.urls')),
     path('blog/', include('blog.urls')),
+    path('store/', include('store.urls')),
     path('', include('frontend.urls')),
     path('', include("leads.urls")),
 ]

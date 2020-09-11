@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row wow fadeIn">
+
+  <!--Grid column-->
+  <div class="col-md-6 mb-4">
+
+    <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/14.jpg" class="img-fluid" alt="">
+
+  </div>
+  <!--Grid column-->
+
+  <!--Grid column-->
+  <div class="col-md-6 mb-4">
+
+    <!--Content-->
+    <div class="p-4">
+      <p class="lead">
+        <span>${{ product.price }}</span>
+      </p>
+
+      <p class="lead font-weight-bold">{{ product.name }}</p>
+
+      <p>{{ product.description }}</p>
+
+      <form class="d-flex justify-content-left">
+        <!-- Default input -->
+        <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">
+        <a href="{% url 'add-to-cart' product.id product.slug %}" class="btn btn-primary btn-md my-0 p">Add to cart
+          <i class="fas fa-shopping-cart ml-1"></i>
+        </a>
+
+
+      </form>
+
+    </div>
+    <!--Content-->
+
+  </div>
+  <!--Grid column-->
+
+</div>
+
+{% endblock content %}
