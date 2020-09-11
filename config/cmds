@@ -1,0 +1,84 @@
+apt-get update && apt-get upgrade
+
+#Setting up hostname
+hostnamectl set-hostname django-server
+nano /etc/hosts
+# Add <ip-addr> <host-name>
+
+#Add user
+adduser <user>
+adduser <user> sudo
+
+#Set up ssh keys
+mkdir -p ~/.ssh
+#In development directory
+ssh-keygen -b 4096
+scp ~/.ssh/id_rsa.pub <user>@<ip-addr>:~/.ssh/authorized_keys
+#On server
+chmod 700 ~/.ssh/
+chmod 600 ~/.ssh/*
+sudo nano /etc/ssh/sshd_config
+# PermitRootLogin False
+# PasswordAuthentication no
+sudo systemctl restart sshd
+
+#Firewall
+sudo apt-get install ufw
+sudo ufw default allow outgoing
+sudo ufw default deny incoming
+sudo ufw allow ssh
+sudo ufw allow 8000
+sudo ufw enable
+sudo ufw status
+
+#In development directory
+pip freeze > requirements.txt
+
+#On server
+#Install python and dependencies
+sudo apt-get install python3-pip
+sudo apt-get install python3-venv
+python3 -m venv /venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+
+#Modify settings.py, add <ip-addr> to ALLOWED_HOSTS
+python3 manage.py collectstatic
+#Create superuser
+python3 manage.py createsuperuser
+
+#Setting up apache server/ modwsgi
+sudo apt-get install apache2 libapache2-mod-wsgi-py3
+cd /etc/apache2/sites-avalible
+cp 000-default.conf <project-name>.conf
+sudo nano <project-name>.conf #Edit to configure apache2 server 
+
+#Enable apache2 site
+sudo a2ensite <project-name>
+sudo a2dissite 000-default.conf
+
+sudo chown :www-data <project-name>/db.sqlite3
+sudo chmod 664 <project-name>/db.sqlite3
+sudo chown :www-data <project-name>
+
+sudo chown -R :www-data noahpanpizza/media/
+sudo chmod -R 775 <project-name>/media
+
+sudo service apache2 restart
+
+#Using Certibot for https
+https://github.com/CoreyMSchafer/code_snippets/blob/master/Django_Blog/snippets/apache-ubuntu-certbot.txt
+sudo certbot --apache
+
+#Renewing certibot every month
+sudo crontab -e
+# add 30 4 1 * * sudo certbot renew --quiet  
+
+#Debugging Apache2 server
+sudo service apache2 status
+sudo journalctl -u apache2
+sudo systemctl status apache2
+
+#Apache2 error logging
+sudo su 
+tail -n 100 /var/log/apache2/error.log
