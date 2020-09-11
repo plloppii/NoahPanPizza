@@ -26,8 +26,8 @@ class Project(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if self.slug == None:
-            mslug = slugify(self.title)
+        mslug = slugify(self.title)
+        if self.slug == None or self.slug != mslug:
             exists = Project.objects.filter(slug=mslug).exists()
             count = 1
             while exists:

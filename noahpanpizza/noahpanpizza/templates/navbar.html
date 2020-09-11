@@ -1,4 +1,4 @@
-<nav class="navbar navbar-light bg-light navbar-expand-md fixed-top">
+<nav class="navbar navbar-light z-depth-0 navbar-expand-md fixed-top">
     <div class="container">
         <a class="navbar-brand" href="/">
             noahpanpizza
@@ -13,7 +13,7 @@
                     <a class="nav-link" href="{% url 'projects' %}">work</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">shop</a>
+                    <a class="nav-link" href="{% url 'store' %}">shop</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'blog-home' %}">blog</a>
@@ -21,10 +21,15 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'about' %}">about</a>
                 </li>
+                {% if total_items %}
+                <li>
+                    <a class="nav-link" href="{% url 'shopping-cart' %}">cart({{ total_items }})</a>
+                </li>
+                {% endif %}
             </ul>
 
             <ul class="nav navbar-nav ml-auto">
-                <li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'contact' %}">get in touch</a>
                 </li>
             </ul>

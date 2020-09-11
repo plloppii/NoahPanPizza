@@ -12,8 +12,9 @@
     <h2 class="mt-4"> {{ project.title }} </h2>
     {% if user.is_staff %}
     <div>
-        <a class="btn btn-secondary btn-sm" href="{% url 'project-update' project.id project.slug %}">Edit</a>
-        <a class="btn btn-danger btn-sm" href="{% url 'project-delete' project.id project.slug %}">Delete</a>
+        <a class="btn btn-outline-grey btn-sm my-0" href="{% url 'project-update' project.id project.slug %}">Edit</a>
+        <a class="btn btn-outline-danger btn-sm my-0"
+            href="{% url 'project-delete' project.id project.slug %}">Delete</a>
     </div>
     {% endif %}
 </div>

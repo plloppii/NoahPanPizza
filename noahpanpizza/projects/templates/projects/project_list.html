@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between align-items-end">
         <h3 class="h1-responsive font-weight-bold mb-0 p-0">Projects Not Pizzas</h3>
         {% if user.is_staff %}
-        <a class="btn btn-secondary btn-sm" href="{% url 'project-create' %}">Create New
+        <a class="btn btn-outline-grey btn-sm my-0" href="{% url 'project-create' %}">Create New
             Project</a>
         {% endif %}
     </div>
@@ -16,9 +16,9 @@
 <!-- Section description -->
 <!-- <p class="grey-text w-responsive mx-auto mb-4">This is a brief archive of all of the projects that I have completed!</p> -->
 
-<div class="row d-flex justify-content-center px-3">
+<div class="row d-flex justify-content-center">
     {% for project in projects %}
-    <div class="col-md-6 p-4">
+    <div class="col-md-6 p-3">
         {% if project.thumbnail %}
         <div class="rounded shadow">
             <a href="{% url 'project-detail' project.id project.slug%}">
