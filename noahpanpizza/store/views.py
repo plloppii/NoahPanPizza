@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from store.models import Product, CartItem, Cart
-from django.views.generic import TemplateView, ListView, DetailView, View
+from .models import Product, CartItem, Cart, BillingAddress
+from .forms import CheckoutForm
+from django.views.generic import TemplateView, ListView, DetailView, FormView
 # Create your views here.
 
 class ProductList(ListView):
@@ -24,19 +25,45 @@ class ShoppingCart(TemplateView):
             subtotal = sum([ (item.quantity*item.product.price) for item in current_cart.items.all()]) 
             context["subtotal"] = subtotal
         return context 
-class CheckoutPage(TemplateView):
+
+class CheckoutPage(FormView):
+    form_class = CheckoutForm
     template_name= "store/checkout-page.html"
+    def post(self, *args, **kwargs):
+        form = CheckoutForm(self.request.POST or None)
+        
+        current_order = Cart.objects.filter(user=self.request.user, ordered=False)
+        if current_order.exists():
+            if form.is_valid():
+                first_name = form.cleaned_data.get("first_name")
+                last_name = form.cleaned_data.get("last_name")
+                email = form.cleaned_data.get("email")
+                address1 = form.cleaned_data.get("address1")
+                address2 = form.cleaned_data.get("address2")
+                country = form.cleaned_data.get("country")
+                state = form.cleaned_data.get("state")
+                zipcode = form.cleaned_data.get("zipcode")
+                same_billing_address = form.cleaned_data.get("same_billing_address")
+                payment_option = form.cleaned_data.get("payment_option")
+                billing_address = BillingAddress(
+                    user = self.request.user,
+                    address1 = address1,
+                    address2 = address2,
+                    country = country,
+                    state = state,
+                    zipcode = zipcode
+                )
+                billing_address.save()
+                current_order.billing_address = billing_address
+                current_order.save()
+                #TODO redirect to a payment method 
+                return redirect('checkout')
+        else:
+            return redirect('checkout')
+        return redirect('home')
 
-
-    # def render_to_response(self, context, **response_kwargs):
-    #     if self.request.user.is_authenticated:
-    #         current_cart = Cart.objects.filter(user=self.request.user, ordered=False)[0]
-    #         subtotal = sum([ (item.quantity*item.product.price) for item in current_cart.items.all()])
-    #         context["subtotal"] = subtotal
-    #         context["cart"] = current_cart
-    #     return render(self.request, self.get_template_names()[0], context)
-
-
+class PaymentView(TemplateView):
+    template_name = "store/payment-page.html"
 
 def add_to_cart(request, pk, slug):
     if not request.user.is_authenticated:

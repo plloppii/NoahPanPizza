@@ -25,7 +25,6 @@ class ProjectTagView(ListView):
     context_object_name = "projects"
     ordering = ["-date_posted"]
     def get_queryset(self):
-        print(self.kwargs)
         tags = Tag.objects.filter(slug=self.kwargs.get('tagslug')).values_list('name', flat=True)
         return Project.objects.filter(tags__name__in=tags)
 
@@ -41,10 +40,6 @@ class ProjectCreateView(StaffRequiredMixin, CreateView):
     # fields = ['title', 'project_type', 'description', 'content', 'images']
     form_class = CreateProjectForm
     success_url = reverse_lazy("projects")
-
-    # def get(self, request, *args, **kwargs):
-    #     form = self.form_class()
-    #     return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES)
