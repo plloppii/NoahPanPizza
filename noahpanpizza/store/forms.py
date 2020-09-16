@@ -18,5 +18,5 @@ class CheckoutForm(forms.Form):
     city = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'City'}), label="")
     zipcode = forms.CharField(max_length=5, widget=forms.TextInput(attrs={'placeholder': 'Zip'}), label="")
     same_billing_address = forms.BooleanField(widget=forms.CheckboxInput(), required=False, initial=True)
-    payment_option = forms.ChoiceField(widget=forms.RadioSelect, choices=PAYMENT_OPTIONS)
+    payment_option = forms.ChoiceField(widget=forms.RadioSelect, choices=PAYMENT_OPTIONS, required=False)
 

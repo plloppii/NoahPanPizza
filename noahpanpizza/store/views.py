@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, CartItem, Cart, BillingAddress
+from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.contrib import messages
+from .models import Product, CartItem, Cart, BillingAddress, ShippingAddress
 from .forms import CheckoutForm
 from django.views.generic import TemplateView, ListView, DetailView, FormView
 # Create your views here.
@@ -29,11 +30,12 @@ class ShoppingCart(TemplateView):
 class CheckoutPage(FormView):
     form_class = CheckoutForm
     template_name= "store/checkout-page.html"
+        
     def post(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST or None)
-        
         current_order = Cart.objects.filter(user=self.request.user, ordered=False)
         if current_order.exists():
+            current_order = current_order[0]
             if form.is_valid():
                 first_name = form.cleaned_data.get("first_name")
                 last_name = form.cleaned_data.get("last_name")
@@ -53,17 +55,37 @@ class CheckoutPage(FormView):
                     state = state,
                     zipcode = zipcode
                 )
+                shipping_address = ShippingAddress(
+                    user = self.request.user,
+                    address1 = address1,
+                    address2 = address2,
+                    country = country,
+                    state = state,
+                    zipcode = zipcode
+                )
                 billing_address.save()
+                shipping_address.save()
                 current_order.billing_address = billing_address
+                current_order.shipping_address = shipping_address
                 current_order.save()
                 #TODO redirect to a payment method 
+                return redirect('payment')
+            else:
+                messages.warning(self.request,"Invalid form")
                 return redirect('checkout')
         else:
             return redirect('checkout')
         return redirect('home')
 
-class PaymentView(TemplateView):
+class PaymentPage(TemplateView):
+    #Check if given cart and name, billing/ shipping address is filled out. 
     template_name = "store/payment-page.html"
+    def get(self, request, *args, **kwargs):
+        order = get_object_or_404(Cart, user=request.user, ordered=False)
+        if order.ready_for_payment():
+            return render(request, 'store/payment-page.html', {'order': order})
+        else:
+            return redirect('shopping-cart')
 
 def add_to_cart(request, pk, slug):
     if not request.user.is_authenticated:

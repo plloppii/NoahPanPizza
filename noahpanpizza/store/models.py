@@ -73,4 +73,7 @@ class Cart(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)    
 
+    def ready_for_payment(self):
+        return (self.ordered == False and not self.billing_address == None and not self.shipping_address == None)
+
 
