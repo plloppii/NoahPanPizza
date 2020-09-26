@@ -46,21 +46,29 @@ class CartItem(models.Model):
         print("CartItem Save called!")
         super().save(*args, **kwargs)   
 
-class BillingAddress(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+class ContactInfo(models.Model):
     first_name = models.CharField(max_length=100) 
-    last_name = models.CharField(max_length=100) 
+    last_name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=15)
+    email_address = models.CharField(max_length=100)
+    def __str__(self):
+        return self.first_name+" "+self.last_name+" "+self.email_address
+
+class BillingAddress(models.Model):
     address1 = models.CharField(max_length=100)
     address2 = models.CharField(max_length=100)
     country = CountryField(multiple=False)
     state = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     zipcode = models.CharField(max_length=5)
+    def __str__(self):
+        return self.address1+self.address2+" "+self.city+" "+self.state+" "+self.zipcode+" "+self.country.code
 class ShippingAddress(BillingAddress):
     pass
  
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    contact = models.ForeignKey(ContactInfo, on_delete=models.SET_NULL, blank=True, null=True)
     items = models.ManyToManyField(CartItem)
     ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField(auto_now_add=True)
@@ -74,6 +82,6 @@ class Cart(models.Model):
         super().save(*args, **kwargs)    
 
     def ready_for_payment(self):
-        return (self.ordered == False and not self.billing_address == None and not self.shipping_address == None)
+        return (self.ordered == False and not self.shipping_address == None)
 
 

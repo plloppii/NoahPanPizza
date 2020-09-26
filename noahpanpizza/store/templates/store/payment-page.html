@@ -74,27 +74,32 @@
 
 {% block extrascripts %}
     <script
-        src="https://www.paypal.com/sdk/js?client-id=AU0iQVK3TE38sF4qX7W5UEVny24GQ1O410iMiNH_hMAH3QiKpaQ5Ih6l1D-wr6AKLtnI38T6o0Lt_G6F&intent=authorize"> 
+        src="https://www.paypal.com/sdk/js?client-id=AU0iQVK3TE38sF4qX7W5UEVny24GQ1O410iMiNH_hMAH3QiKpaQ5Ih6l1D-wr6AKLtnI38T6o0Lt_G6F&commit=false"> 
     </script>
     <script>
+        {% comment %} completeOrder() => {
+            var url = "{% url 'complete'%}"
+            fetch(url, {
+                method: 'POST',
+                heards{
+                    'Content-type': 'application/json'
+                },
+                body.JSON.stringify({})
+            })
+        } {% endcomment %}
+
         paypal.Buttons({
             createOrder: function(data, actions) {
-                return actions.order.create({
-                    intent: 'AUTHORIZE',
+                console.log("{{ order.contact }}");
+                console.log("{{ subtotal }}");
+                var rtn_order = {
+                    intent: 'CAPTURE',
                     payer: {
                         name: {
-                            given_name: "PayPal",
-                            surname: "Customer"
+                            given_name: "{{ order.contact.first_name }}",
+                            surname: "{{ order.contact.last_name }}"
                         },
-                        address: {
-                            address_line_1: '123 ABC Street',
-                            address_line_2: 'Apt 2',
-                            admin_area_2: 'San Jose',
-                            admin_area_1: 'CA',
-                            postal_code: '95121',
-                            country_code: 'US'
-                        },
-                        email_address: "customer@domain.com",
+                        email_address: "{{ order.contact.email_address }}",
                         phone: {
                             phone_type: "MOBILE",
                             phone_number: {
@@ -104,32 +109,49 @@
                     },
                     purchase_units: [{
                         amount: {
-                            value: '15.00',
+                            value: '{{ subtotal }}',
                             currency_code: 'USD'
-                        },
-                        shipping: {
-                            address: {
-                                address_line_1: '2211 N First Street',
-                                address_line_2: 'Building 17',
-                                admin_area_2: 'San Jose',
-                                admin_area_1: 'CA',
-                                postal_code: '95131',
-                                country_code: 'US'
-                            }
-                        },
-                    }]
-                });
+                        }
+                    }],
+                    application_context: {
+                        shipping_preference: "NO_SHIPPING"
+                    }
+                }
+                if ({{ order.billing_address|yesno:"true,false" }}){
+                    rtn_order.payer.address = {
+                        address_line_1: '{{ order.billing_address.address1 }}',
+                        address_line_2: '{{ order.billing_address.address2 }}',
+                        admin_area_2: '{{ order.billing_address.city }}',
+                        admin_area_1: '{{ order.billing_address.state }}',
+                        postal_code: '{{ order.billing_address.zipcode }}',
+                        country_code: '{{ order.billing_address.country.code }}'                        
+                    };
+                }
+
+                return actions.order.create(rtn_order);
             },
             onApprove: (data, actions) => {
                 // This function captures the funds from the transaction.
-                return actions.order.capture()
+                return actions.order.get()
                 .then(function(details) {
-                    // This function shows a transaction success message to your buyer.
-                    alert('Transaction completed by ' + details.payer.name.given_name);
+                    document.querySelector('#confirm-button')
+                    .addEventListener('click', function() {
+                        return actions.order.capture().then(function(){
+                            //Send post request to successful order page. 
+                            alert('Transaction completed by ' + details.payer.name.given_name);
+                        })
+                    })
                 });
             },
-            onError : (error) => {
+            onError : function(err) {
+                console.log("And error has occured.");
                 console.log(error);
+                alert("And Error has occured");
+            },
+            style : {
+                shape : "pill",
+                color: "blue",
+                label: "pay"
             }
         }).render('#paypal-button-container');
         // This function displays Smart Payment Buttons on your web page.
@@ -156,8 +178,29 @@
                                 postal_code : "11364",
                                 country_code : "US",
                             }
+                            address: {
+                                address_line_1: '{{ order.billing_address.address1 }}',
+                                address_line_2: '{{ order.billing_address.address2 }}',
+                                admin_area_2: '{{ order.billing_address.city }}',
+                                admin_area_1: '{{ order.billing_address.state }}',
+                                postal_code: '{{ order.billing_address.zipcode }}',
+                                country_code: '{{ order.billing_address.country.code }}'
+                            },
                         },
                     }],
+                    shipping: {
+                        address: {
+                            address_line_1: '{{ order.shipping_address.address1 }}',
+                            address_line_2: '{{ order.shipping_address.address2 }}',
+                            admin_area_2: '{{ order.shipping_address.city }}',
+                            admin_area_1: 'CA',
+                            postal_code: '95131',
+                            country_code: 'US'
+                        }
+                    },
+                    application_context: {
+                        shipping_preference: "NO_SHIPPING"
+                    }
                 });
                 console.log(created_order);
                 return created_order
