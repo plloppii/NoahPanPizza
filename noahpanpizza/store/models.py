@@ -52,7 +52,7 @@ class ContactInfo(models.Model):
     phone_number = models.CharField(max_length=15)
     email_address = models.CharField(max_length=100)
     def __str__(self):
-        return self.first_name+" "+self.last_name+" "+self.email_address
+        return self.first_name+" "+self.last_name+"\n"+self.email_address+" "+self.phone_number
 
 class BillingAddress(models.Model):
     address1 = models.CharField(max_length=100)
@@ -62,7 +62,7 @@ class BillingAddress(models.Model):
     city = models.CharField(max_length=100)
     zipcode = models.CharField(max_length=5)
     def __str__(self):
-        return self.address1+self.address2+" "+self.city+" "+self.state+" "+self.zipcode+" "+self.country.code
+        return self.address1+self.address2+"\n"+self.city+" "+self.state+" "+self.zipcode+"\n"+self.country.code
 class ShippingAddress(BillingAddress):
     pass
  
@@ -72,6 +72,7 @@ class Cart(models.Model):
     items = models.ManyToManyField(CartItem)
     ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField(auto_now_add=True)
+    # order_information = JSONField(null=True, blank=True)
     billing_address = models.ForeignKey(BillingAddress, related_name="billing_address", on_delete=models.SET_NULL, blank=True, null=True)
     shipping_address = models.ForeignKey(ShippingAddress,related_name="shipping_address", on_delete=models.SET_NULL, blank=True, null=True)
 
