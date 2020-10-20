@@ -8,57 +8,57 @@
   <!--Main layout-->
 
   <div class="wow fadeIn">
+      {% if cart and not cart.is_empty %}   
+        <h3 class="d-flex align-items-center my-3">
+          <span class="text-muted px-3">your cart</span>
+          <span class="badge badge-dark badge-pill">{{ total_items }}</span>
+        </h3>
 
-    <!-- Heading -->
-    <h3 class="d-flex align-items-center my-3">
-      <span class="text-muted px-3">your cart</span>
-      <span class="badge badge-secondary badge-pill">{{ total_items }}</span>
-    </h3>
+        <!--Grid column-->
+        <div class="col-md-12 mb-4 p-0">
+          <div class="d-flex justify-content-between">
+            <h6 class="col-md-6 m-0">item</h6>
+            <h6 class="col-md-3 m-0 text-center">qty</h6>
+            <h6 class="col-md-3 m-0 text-right">price</h6>
+          </div>
+          <hr>
+          {% for item in cart.items.all %}
+          <li class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center col-md-6">
+              <a href="{% url 'delete-from-cart' item.product.id item.product.slug %}" class="fa fa-times fa-fw"
+                aria-hidden="true"></a>
+              <img class="" src="{{ item.product.thumbnail }}" alt="{{ item.product.name }}.img">
+              <div>
+                <h6 class="my-0">{{ item.product.name }}</h6>
+                <small class="text-muted">{{ item.product.description }}</small>
+              </div>
+            </div>
 
-    <!--Grid column-->
-    <div class="col-md-12 mb-4">
-      <div class="d-flex justify-content-between">
-        <h6>item</h6>
-        <h6>qty</h6>
-        <h6>price</h6>
-      </div>
-      <hr>
+            <div class="col-md-3 d-flex justify-content-center">
+              <a href="#" class="fa fa-minus fa-fw mr-2" aria-hidden="true"></a>
+              <h6 class="text-center m-0">{{ item.quantity }}</h6>
+              <a href="#" class="fa fa-plus fa-fw ml-2" aria-hidden="true"></a>
+            </div>
+            
+            <span class="col-md-3 text-muted text-right">${{ item.get_subtotal }}</span>
+          </li>
+          <hr>
+          {% endfor %}
 
-      <ul class="list-group"></ul>
-
-      {% if cart %}
-      {% for item in cart.items.all %}
-      <li class="d-flex justify-content-between">
-        <div class="d-flex align-items-center">
-          <a href="{% url 'delete-from-cart' item.product.id item.product.slug %}" class="fa fa-times fa-fw"
-            aria-hidden="true"></a>
-          <img class="" src="{{ item.product.thumbnail }}" alt="{{ item.product.name }}.img">
-          <div>
-            <h6 class="my-0">{{ item.product.name }}</h6>
-            <small class="text-muted">{{ item.product.description }}</small>
+          <div class="d-flex flex-column align-items-end">
+            <div class="d-flex justify-content-between">
+              <h6>Subtotal:</h6>
+              <h6>${{ subtotal }}</h6>
+            </div>
+            <a href="{% url 'checkout' %}" class="btn btn-grey mx-0">Checkout</a>
           </div>
         </div>
-
-        <h6>{{ item.quantity }}</h6>
-        <span class="text-muted">${{ item.product.price }}</span>
-      </li>
-      <hr>
-      {% endfor %}
+        <!--Grid column-->
+      {% else %}
+      <h3>Your Shopping Cart is Empty</h3>
       {% endif %}
-      </ul>
 
-
-      <div class="d-flex flex-column align-items-end">
-        <div class="d-flex justify-content-between">
-          <h6>Subtotal:</h6>
-          <h6>${{ subtotal }}</h6>
-        </div>
-        <a href="{% url 'checkout' %}" class="btn btn-grey mx-0">Checkout</a>
-      </div>
       <!-- Promo code -->
-
-    </div>
-    <!--Grid column-->
 
   </div>
   <!--Grid row-->

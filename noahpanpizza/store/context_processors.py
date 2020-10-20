@@ -3,9 +3,8 @@ from .models import Cart
 #Fetch the current cart of the user if it exists.
 def current_cart(request):
     if request.user.is_authenticated:
-        cart = Cart.objects.filter(user=request.user)
+        cart = Cart.objects.filter(user=request.user, ordered=False)
         if cart.exists():
-            total_items = sum([quat.quantity for quat in cart[0].items.all()])
-            return {"total_items": total_items}
+            return {"total_items": cart[0].get_total_items()}
     return {}
 

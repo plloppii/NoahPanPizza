@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django_countries.fields import CountryField
 
 # Create your models here.
@@ -33,19 +34,6 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
 
-
-class CartItem(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE, null=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    ordered = models.BooleanField(default=False)
-    quantity = models.IntegerField(default=1)
-
-    def __str__(self):
-        return self.product.name + " Quantity: "+str(self.quantity)
-    def save(self, *args, **kwargs):
-        print("CartItem Save called!")
-        super().save(*args, **kwargs)   
-
 class ContactInfo(models.Model):
     first_name = models.CharField(max_length=100) 
     last_name = models.CharField(max_length=100)
@@ -65,24 +53,49 @@ class BillingAddress(models.Model):
         return self.address1+self.address2+"\n"+self.city+" "+self.state+" "+self.zipcode+"\n"+self.country.code
 class ShippingAddress(BillingAddress):
     pass
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete = models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey("Cart", on_delete=models.CASCADE, null=True)
+    quantity = models.IntegerField(default=1)
+
+    def get_subtotal(self):
+        return self.product.price*self.quantity
+
+    def __str__(self):
+        return self.product.name + " OrderID:"+str(self.order.id)+" "+" Qty:"+str(self.quantity)
+    def save(self, *args, **kwargs):
+        print("CartItem Save called!")
+        super().save(*args, **kwargs)   
  
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     contact = models.ForeignKey(ContactInfo, on_delete=models.SET_NULL, blank=True, null=True)
     items = models.ManyToManyField(CartItem)
-    ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField(auto_now_add=True)
-    # order_information = JSONField(null=True, blank=True)
+    paypal_information = JSONField(null=True, blank=True)
     billing_address = models.ForeignKey(BillingAddress, related_name="billing_address", on_delete=models.SET_NULL, blank=True, null=True)
     shipping_address = models.ForeignKey(ShippingAddress,related_name="shipping_address", on_delete=models.SET_NULL, blank=True, null=True)
+    ordered = models.BooleanField(default=False)
+
+    def is_empty(self):
+        return self.get_total_items() == 0
+    def get_total_items(self):
+        return sum([quat.quantity for quat in self.items.all()])
+    def get_subtotal(self):
+        return sum([(item.quantity*item.product.price) for item in self.items.all()]) 
 
     def __str__(self):
-        return str(self.user)+ "\'s Cart: "+ str(self.items.count())+" Items"
+        rtn = str(self.user)+" Order ("+ str(self.get_total_items())+" Items): "
+        if(self.ordered): rtn+="Filled"
+        else: rtn+="Open" 
+        return rtn
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)    
 
     def ready_for_payment(self):
-        return (self.ordered == False and not self.shipping_address == None)
+        return (self.ordered == False and not self.is_empty() )
 
 

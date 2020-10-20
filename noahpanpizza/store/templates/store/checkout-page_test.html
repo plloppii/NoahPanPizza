@@ -340,7 +340,7 @@
                             $.ajax({
                                 url: "/store/checkout-success/",
                                 type : "POST",
-                                data : details,
+                                data : { value: JSON.stringify(details)},
                                 success : (rtn) => {
                                     if(!("error" in rtn) ){
                                         alert('Transaction completed by ' + details.payer.name.given_name);
