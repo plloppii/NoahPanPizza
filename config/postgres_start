@@ -1,2 +1,0 @@
-pg_ctl -D postgres start
-psql postgres
