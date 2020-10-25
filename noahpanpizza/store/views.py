@@ -1,13 +1,35 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.forms.models import model_to_dict
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import Product, CartItem, Cart, BillingAddress, ShippingAddress, ContactInfo
 from .forms import CheckoutForm, ContactForm, ShippingForm
 from django.views.generic import View, TemplateView, ListView, DetailView, FormView
 
 import json
 # Create your views here.
+
+
+# Get the current order depending on if the user is authenticated or not.
+# Returns None or the current order.
+def get_current_order(request, createOrder=False):
+    current_order = None
+    if request.user.is_authenticated:
+        if createOrder: 
+            current_order, created = Cart.objects.get_or_create(user=request.user, ordered = False)
+        else:
+            order_query = Cart.objects.filter(user=request.user, ordered=False)
+            if order_query.exists():
+                current_order = order_query[0]
+    else:
+        if "cart" in request.session:
+            current_order = Cart.objects.get(id=request.session["cart"])
+        else:
+            if createOrder:
+                current_order = Cart.objects.create(ordered=False) 
+                request.session["cart"] = current_order.id
+            
+    return current_order
 
 class ProductList(ListView):
     model = Product
@@ -24,9 +46,8 @@ class ShoppingCart(TemplateView):
     template_name = "store/shopping-cart.html"
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        current_cart = Cart.objects.filter(user=self.request.user, ordered=False)
-        if self.request.user.is_authenticated and current_cart.exists():
-            current_cart = current_cart[0]
+        current_cart = get_current_order(self.request)
+        if current_cart:
             context["cart"] = current_cart
             subtotal = current_cart.get_subtotal() 
             context["subtotal"] = subtotal
@@ -36,9 +57,9 @@ class contact_form(View):
     def post(self, *args, **kwargs):
         response = {}
         form = ContactForm(self.request.POST.dict() or None)
-        current_order = Cart.objects.filter(user=self.request.user, ordered=False)
-        if(current_order.exists()):
-            current_order = current_order[0]
+        # current_order = Cart.objects.filter(user=self.request.user, ordered=False)
+        current_order = get_current_order(self.request)
+        if current_order:
             if form.is_valid():
                 first_name = form.cleaned_data.get("first_name")
                 last_name = form.cleaned_data.get("last_name")
@@ -67,9 +88,8 @@ class shipping_form(View):
     def post(self, *args, **kwargs):
         response = {}
         form = ShippingForm(self.request.POST.dict() or None)
-        current_order = Cart.objects.filter(user=self.request.user, ordered=False)
-        if(current_order.exists()):
-            current_order = current_order[0]
+        current_order = get_current_order(self.request)
+        if current_order:
             if form.is_valid():
                 address1 = form.cleaned_data.get("address1")
                 address2 = form.cleaned_data.get("address2")
@@ -123,34 +143,36 @@ class CheckoutPage(FormView):
     form_class = CheckoutForm
     template_name= "store/checkout-page_test.html"
     def get(self, request, *args, **kwargs):
-        order = get_object_or_404(Cart, user=request.user, ordered=False)
+        order = get_current_order(request)
         if order.ready_for_payment():
             subtotal = sum([ (item.quantity*item.product.price) for item in order.items.all()]) 
             return render(request, 'store/checkout-page_test.html', {'order': order, 'subtotal': subtotal, 'form': CheckoutForm()})
         else:
             return redirect('shopping-cart')
 
-class CheckoutSuccessPage(TemplateView):
+class CheckoutSuccessPage(DetailView):
+    model = Cart
+    context_object_name = "order"
     template_name = "store/checkout-success.html"
     def post(self, *args, **kwargs):
         response = {}
-        current_order = Cart.objects.filter(user=self.request.user, ordered=False)
-        if(current_order.exists()):
-            current_order = current_order[0]
+        current_order = get_current_order(self.request)
+        if current_order:
             response["success"] = True
             tmp = json.loads(self.request.POST.get('value'))
             tmp_pretty = json.dumps(tmp, indent=2)
             current_order.paypal_information = tmp
             current_order.ordered = True
             current_order.save()
+            if "cart" in self.request.session:
+                print("Order placed! Removing id from sessions")
+                del self.request.session["cart"]
         else:
             response["error"] = "No valid order exists!"
         return HttpResponse(
             json.dumps(response),
             content_type="application/json"
         )
-
-    # def get(self, request, *args, **kwargs):
 
 
 class PaymentPage(TemplateView):
@@ -166,30 +188,37 @@ class PaymentPage(TemplateView):
             return redirect('shopping-cart')
 
 def add_to_cart(request, pk, slug):
-    if not request.user.is_authenticated:
-       return redirect('product-detail', pk=pk, slug=slug)    
-    
-    #Try to find if a cart of the current user exists. 
-    current_order, created = Cart.objects.get_or_create(user=request.user, ordered = False)
     product = get_object_or_404(Product, id=pk, slug=slug)
-    cart_item, created = CartItem.objects.get_or_create(user = request.user, product=product, order=current_order)
+    current_order = get_current_order(request, True)    
+    
+    if not request.user.is_authenticated: 
+        cart_item, cart_item_created = CartItem.objects.get_or_create(product=product, order=current_order)
+    else:
+        cart_item, cart_item_created = CartItem.objects.get_or_create(user = request.user, product=product, order=current_order)
 
-    if current_order.items.filter(product=product).exists():
+    if cart_item_created:
+        current_order.items.add(cart_item)
+    else:
         cart_item.quantity+=1
         cart_item.save()
-    else:
-        current_order.items.add(cart_item)
-
-    return redirect('product-detail', pk=pk, slug=slug)   
+    # return HttpResponseRedirect(request.path_info)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def delete_from_cart(request, pk, slug):
-    if not request.user.is_authenticated:
-       return redirect('product-detail', pk=pk, slug=slug)    
-
     product = get_object_or_404(Product, id=pk, slug=slug)
-    cart_item = CartItem.objects.filter(user=request.user, product=product, ordered=False)
+
+    current_order = get_current_order(request, True)    
     
-    if cart_item.exists():
+    if not request.user.is_authenticated: 
+        cart_item, cart_item_created = CartItem.objects.get_or_create(product=product, order=current_order)
+    else:
+        cart_item, cart_item_created = CartItem.objects.get_or_create(user = request.user, product=product, order=current_order)
+
+    if cart_item.quantity <= 1:
         cart_item.delete()
-        
-    return redirect('shopping-cart')    
+    else:
+        cart_item.quantity-=1
+        cart_item.save()
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    # return HttpResponseRedirect(request.path_info)

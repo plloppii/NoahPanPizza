@@ -3,6 +3,48 @@
 
 {% block content %}
 
-<h4> Thanks for your order! </h4>
+<div class="mb-4">
+    <h4> Thanks for your order!</h4>
+    <h4> Here are your details for Order #{{order.id}}</h4>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h6>Contact Info</h6>
+        <div class="px-5 mb-3">
+            <small style="white-space: pre-wrap">{{order.contact}}</small>
+        </div>
+        <h6>Shipping Address</h6>
+        <div class="px-5">
+            <small style="white-space: pre-wrap">{{order.shipping_address}}</small>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Cart -->
+        <ul class="list-group mb-3 z-depth-1">
+        {% for item in order.items.all %}
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                <h6 class="my-0">{{item.product.name}} ({{item.quantity}})</h6>
+                <span class="text-muted">{{item.get_subtotal}}</span>
+            </li>
+        {% endfor %}
+        <li class="list-group-item d-flex justify-content-between bg-light">
+            <div class="text-success">
+            <h6 class="my-0">Promo code</h6>
+            <small>EXAMPLECODE</small>
+            </div>
+            <span class="text-success">-$5</span>
+        </li>
+        <div class="d-flex justify-content-between p-3">
+            <span class="pr-2">Order Total: </span>
+            <strong>{{order.get_subtotal}}</strong>
+        </div>
+        </ul>
+
+        <!-- Promo code -->
+
+    </div>
+</div>
+
 
 {% endblock content %}

@@ -42,6 +42,10 @@ class ContactInfo(models.Model):
     def __str__(self):
         return self.first_name+" "+self.last_name+"\n"+self.email_address+" "+self.phone_number
 
+# class PaymentInfo(models.Model):
+#     payment_id =models.CharField(max_length=100)
+
+
 class BillingAddress(models.Model):
     address1 = models.CharField(max_length=100)
     address2 = models.CharField(max_length=100)
@@ -64,7 +68,8 @@ class CartItem(models.Model):
         return self.product.price*self.quantity
 
     def __str__(self):
-        return self.product.name + " OrderID:"+str(self.order.id)+" "+" Qty:"+str(self.quantity)
+        return self.product.name
+        # return self.product.name + " OrderID:"+str(self.order.id)+" "+" Qty:"+str(self.quantity)
     def save(self, *args, **kwargs):
         print("CartItem Save called!")
         super().save(*args, **kwargs)   
