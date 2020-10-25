@@ -12,7 +12,7 @@ class Post(models.Model):
 	date_posted = models.DateTimeField(default=timezone.now) #auto_now or auto_now_add also works (with slight caviates)
 	active = models.BooleanField(default=False)
 	featured = models.BooleanField(default=False)
-	slug = models.SlugField(null=True, blank=True)
+	slug = models.SlugField(null=True, blank=True, max_length=100)
 	readtime = models.CharField(null=True, blank=True, max_length=100)
 
 	# Defines where to redirect the user when a post is created with the PostCreateView

@@ -16,7 +16,7 @@ class Product(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     active = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)
-    slug = models.SlugField(null=True, blank=True)
+    slug = models.SlugField(null=True, blank=True, max_length=100)
 
     def __str__(self):
         return self.name + " "+ str(self.price)
