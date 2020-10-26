@@ -27,6 +27,11 @@ class PostListView(ListView):
 	ordering = ["-date_posted"] #order posts backwards
 	# ordering = ["date_posted"] 
 	paginate_by = 8
+	def get_queryset(self):
+		if "active" in self.kwargs and self.request.user.is_authenticated:
+			print(self.kwargs)
+			return Post.objects.filter(active=False)
+		return Post.objects.filter(active=True)
 
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
@@ -39,9 +44,11 @@ class PostDetailView(DetailView):
 class PostCreateView(StaffRequiredMixin, CreateView):
 	model = Post
 	fields = ['title', 'content', 'active', 'featured']
-	def form_valid(self, form):
-		form.instance.author = self.request.user
-		return super().form_valid(form)
+	def post(self, request, *args, **kwargs):
+		if "post" in self.request.POST:
+			post = self.request.POST.copy()
+			post['active'] = ['on']
+		return super().post(request)
 
 #LoginRequired Mixin is similar to the decorators of function based views.
 #It requires the user to be logged in to update the posts.
@@ -49,7 +56,12 @@ class PostCreateView(StaffRequiredMixin, CreateView):
 class PostUpdateView(StaffRequiredMixin, UpdateView):
 	model = Post
 	fields = ['title', 'content', 'active', 'featured']
-
+	def post(self, request, *args, **kwargs):
+		if "post" in self.request.POST:
+			post = self.request.POST.copy()
+			post['active'] = ['on']
+			self.request.POST = post
+		return super().post(request)
 	#Function tells who the author is of the post (who is the current user.)
 	# def form_valid(self, form):
 	# 	form.instance.author = self.request.user
