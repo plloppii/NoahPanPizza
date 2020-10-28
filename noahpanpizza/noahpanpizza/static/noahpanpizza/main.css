@@ -1,7 +1,7 @@
 @font-face {
   font-family: Lato-Regular;
   src: local('Lato-Regular'),
-  url('Lato-Regular.ttf') format("truetype");
+  url('font/Lato/Lato-Regular.ttf') format("truetype");
 }
 
 body {
