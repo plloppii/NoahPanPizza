@@ -9,7 +9,7 @@ class Project(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=300) 
     content = RichTextUploadingField(blank=True, null=True)
-    thumbnail = models.ImageField(default='', upload_to='project_thumbnails', blank=True)
+    thumbnail = models.ImageField(default='', upload_to='project/thumbnails', blank=True)
     date_posted = models.DateTimeField(default=timezone.now) #auto_now or auto_now_add also works (with slight caviates)
     active = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)

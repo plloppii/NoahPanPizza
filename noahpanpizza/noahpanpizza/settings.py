@@ -171,7 +171,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config.get("EMAIL_USER")
 EMAIL_HOST_PASSWORD = config.get("EMAIL_PASS")
 
-CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_UPLOAD_PATH = 'ckeditor/'
 CKEDITOR_CONFIGS = {
     'default': {
         'width': '100%',

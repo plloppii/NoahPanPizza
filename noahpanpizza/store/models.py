@@ -10,7 +10,7 @@ from django_countries.fields import CountryField
 class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=300)
-    thumbnail = models.ImageField(default='', upload_to='product_thumbnails', blank=True)
+    thumbnail = models.ImageField(default='store/thumbnails/default.jpg', upload_to='store/thumbnails', blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity_instock = models.IntegerField()
     date_posted = models.DateTimeField(default=timezone.now)
