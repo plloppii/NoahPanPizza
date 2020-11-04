@@ -1,7 +1,21 @@
+
 @font-face {
-  font-family: Lato-Regular;
-  src: local('Lato-Regular'),
-  url('font/Lato/Lato-Regular.ttf') format("truetype");
+  font-family: Lato;
+  src: url('font/Lato/Lato-Regular.ttf');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: Lato;
+  src: url('font/Lato/Lato-Bold.ttf');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: Lato;
+  src: url('font/Lato/Lato-Italic.ttf');
+  font-weight: 400;
+  font-style: italic;
 }
 
 body {
@@ -10,8 +24,9 @@ body {
   margin-top: 0rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, p {
   color: #444444;
+  font-weight: normal
 }
 h1 { font-size: 56px;}
 h2 { font-size: 36px;}
@@ -19,13 +34,16 @@ h3 { font-size: 28px;}
 h4 { font-size: 24px;}
 h5 { font-size: 20px;}
 h6 { font-size: 16px;}
+strong {
+  font-weight: bold;
+}
 
 ul {
   margin: 0;
 }
 
 *{
-	font-family: Lato-Regular;
+	font-family: Lato;
 }
 
 /* Used for code snippets */

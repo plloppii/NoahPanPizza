@@ -4,6 +4,7 @@ from .views import ProjectListView, ProjectCreateView, ProjectUpdateView, Projec
 
 urlpatterns = [
     path('', ProjectListView.as_view(), name= 'projects'),
+    path('archive/', ProjectListView.as_view(), {"active": False}, name='project-archive'),
     path('new/', ProjectCreateView.as_view(), name='project-create'),
     path('<int:pk>/<slug:slug>/update/', ProjectUpdateView.as_view(), name='project-update'),
     path('<int:pk>/<slug:slug>/delete/', ProjectDeleteView.as_view(), name='project-delete'),

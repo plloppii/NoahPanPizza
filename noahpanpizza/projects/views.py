@@ -19,6 +19,11 @@ class ProjectListView(ListView):
     template_name = "projects/project_list.html"
     context_object_name = "projects"
     ordering = ["-date_posted"]
+    def get_queryset(self):
+        if "active" in self.kwargs and self.request.user.is_authenticated:
+            return Project.objects.filter(active=False)
+        return Project.objects.filter(active=True)
+
 class ProjectTagView(ListView):
     model = Project
     template_name = "projects/project_list.html"

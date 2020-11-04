@@ -29,7 +29,6 @@ class PostListView(ListView):
 	paginate_by = 8
 	def get_queryset(self):
 		if "active" in self.kwargs and self.request.user.is_authenticated:
-			print(self.kwargs)
 			return Post.objects.filter(active=False)
 		return Post.objects.filter(active=True)
 
