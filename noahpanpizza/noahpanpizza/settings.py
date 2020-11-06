@@ -176,7 +176,7 @@ CKEDITOR_CONFIGS = {
     'default': {
         'width': '100%',
         'toolbar': 'full',
-        'extraPlugins': 'image2, codesnippet'
+        'extraPlugins': 'image2, codesnippet, embed'
     },
     'basic': {
         'width': '100%',
