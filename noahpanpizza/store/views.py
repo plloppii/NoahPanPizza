@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.forms.models import model_to_dict
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Product, CartItem, Cart, BillingAddress, ShippingAddress, ContactInfo
+from .models import Product, CartItem, Cart, BillingAddress, ShippingAddress, ContactInfo, Coupon
 from .forms import CheckoutForm, ContactForm, ShippingForm
 from django.views.generic import View, TemplateView, ListView, DetailView, FormView
 
 import json
+from django.utils import timezone
 # Create your views here.
 
 
@@ -52,6 +53,31 @@ class ShoppingCart(TemplateView):
             subtotal = current_cart.get_subtotal() 
             context["subtotal"] = subtotal
         return context 
+
+class coupon_form(View):
+    def post(self, *args, **kwargs):
+        response = {}
+        coupon_code = self.request.POST.dict()["coupon"] or None
+        coupons= Coupon.objects.filter(coupon_code=coupon_code)
+
+        current_order = get_current_order(self.request)
+        if coupons.exists():
+            for coupon in coupons:
+                if(coupon.is_valid()):
+                    valid_coupon = coupon
+                    current_order.coupon = valid_coupon
+                    current_order.save()
+                    response["coupon"] = valid_coupon.coupon_code
+                    response["discount"] = str(valid_coupon.discount) 
+                    break
+                else:
+                    response["error"] = "Coupon Code "+str(coupon)+ " is no longer valid!"
+        else:
+            response["error"] = "No Valid Coupon Code: "+coupon_code
+        return HttpResponse(
+            json.dumps(response),
+            content_type="application/json"
+        )
 
 class contact_form(View):
     def post(self, *args, **kwargs):
@@ -141,12 +167,12 @@ class shipping_form(View):
 
 class CheckoutPage(FormView):
     form_class = CheckoutForm
-    template_name= "store/checkout-page_test.html"
+    template_name= "store/checkout-page.html"
     def get(self, request, *args, **kwargs):
         order = get_current_order(request)
         if order.ready_for_payment():
             subtotal = sum([ (item.quantity*item.product.price) for item in order.items.all()]) 
-            return render(request, 'store/checkout-page_test.html', {'order': order, 'subtotal': subtotal, 'form': CheckoutForm()})
+            return render(request, 'store/checkout-page.html', {'order': order, 'subtotal': subtotal, 'form': CheckoutForm()})
         else:
             return redirect('shopping-cart')
 
@@ -163,6 +189,7 @@ class CheckoutSuccessPage(DetailView):
             tmp_pretty = json.dumps(tmp, indent=2)
             current_order.paypal_information = tmp
             current_order.ordered = True
+            current_order.ordered_date = timezone.now()
             current_order.save()
             if "cart" in self.request.session:
                 print("Order placed! Removing id from sessions")
@@ -173,19 +200,6 @@ class CheckoutSuccessPage(DetailView):
             json.dumps(response),
             content_type="application/json"
         )
-
-
-class PaymentPage(TemplateView):
-    #Check if given cart and name, billing/ shipping address is filled out. 
-    template_name = "store/payment-page.html"
-    def get(self, request, *args, **kwargs):
-        order = get_object_or_404(Cart, user=request.user, ordered=False)
-        if order.ready_for_payment():
-            subtotal = sum([ (item.quantity*item.product.price) for item in order.items.all()]) 
-            return render(request, 'store/payment-page.html', {'order': order, 'subtotal': subtotal})
-        else:
-            messages.error(self.request,"Order already placed")
-            return redirect('shopping-cart')
 
 def add_to_cart(request, pk, slug):
     product = get_object_or_404(Product, id=pk, slug=slug)

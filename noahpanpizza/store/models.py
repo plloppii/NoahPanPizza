@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django_countries.fields import CountryField
 
+from django.utils import timezone
+
 # Create your models here.
 
 class Product(models.Model):
@@ -58,6 +60,15 @@ class BillingAddress(models.Model):
 class ShippingAddress(BillingAddress):
     pass
 
+class Coupon(models.Model):
+    coupon_code = models.CharField(max_length=50)
+    expiration_date = models.DateTimeField()
+    discount =  models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    def is_valid(self):
+        return timezone.now() < self.expiration_date
+    def __str__(self):
+        return self.coupon_code
+
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -78,8 +89,9 @@ class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     contact = models.ForeignKey(ContactInfo, on_delete=models.SET_NULL, blank=True, null=True)
     items = models.ManyToManyField(CartItem)
-    ordered_date = models.DateTimeField(auto_now_add=True)
+    ordered_date = models.DateTimeField(blank=True, null=True)
     paypal_information = JSONField(null=True, blank=True)
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, blank=True, null=True)
     billing_address = models.ForeignKey(BillingAddress, related_name="billing_address", on_delete=models.SET_NULL, blank=True, null=True)
     shipping_address = models.ForeignKey(ShippingAddress,related_name="shipping_address", on_delete=models.SET_NULL, blank=True, null=True)
     ordered = models.BooleanField(default=False)
@@ -89,7 +101,9 @@ class Cart(models.Model):
     def get_total_items(self):
         return sum([quat.quantity for quat in self.items.all()])
     def get_subtotal(self):
-        return sum([(item.quantity*item.product.price) for item in self.items.all()]) 
+        if(self.coupon): discount = self.coupon.discount
+        else: discount=0
+        return sum([(item.quantity*item.product.price) for item in self.items.all()]) - discount
 
     def __str__(self):
         rtn = str(self.user)+" Order ("+ str(self.get_total_items())+" Items): "
