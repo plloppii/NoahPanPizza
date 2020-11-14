@@ -49,6 +49,10 @@ class ProjectCreateView(StaffRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
+            if "post" in request.POST:
+                post = self.request.POST.copy()
+                post['active'] = ['on']
+                form = self.form_class(post, request.FILES)
             form.save()
             return redirect(self.success_url)
         else:
@@ -57,6 +61,12 @@ class ProjectCreateView(StaffRequiredMixin, CreateView):
 class ProjectUpdateView(StaffRequiredMixin, UpdateView):
     model=Project
     form_class = CreateProjectForm
+    def post(self, request, *args, **kwargs):
+        if "post" in self.request.POST:
+            post = self.request.POST.copy()
+            post['active'] = ['on']
+            self.request.POST = post
+        return super().post(request)
 
 class ProjectDeleteView(StaffRequiredMixin, DeleteView):
     model=Project
