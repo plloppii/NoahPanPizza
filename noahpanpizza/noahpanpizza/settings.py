@@ -13,10 +13,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import json
 
-with open('/etc/config.json') as config_file:
-    config = json.load(config_file)
-
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,13 +21,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config['SECRET_KEY']
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get('DEBUG', default=1))
 ALLOWED_HOSTS = []
-for host in config['ALLOWED_HOSTS']:
-    ALLOWED_HOSTS.append(host)
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -100,8 +95,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'noahpanpizza',
-        'USER': config['DB_USER'],
-        'PASSWORD': config['DB_PASS'],
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
         'HOST': '127.0.0.1',
         'PORT': '5432', 
     },
@@ -168,8 +163,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config.get("EMAIL_USER")
-EMAIL_HOST_PASSWORD = config.get("EMAIL_PASS")
+EMAIL_HOST_USER = os.environ.get("EMAIL_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASS")
 
 CKEDITOR_UPLOAD_PATH = 'ckeditor/'
 CKEDITOR_CONFIGS = {
