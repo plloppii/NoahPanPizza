@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+from django.contrib.messages import constants as messages
 import os
 import json
 
@@ -70,7 +71,7 @@ ROOT_URLCONF = 'noahpanpizza.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ os.path.join(BASE_DIR, 'noahpanpizza/templates'), ],
+        'DIRS': [os.path.join(BASE_DIR, 'noahpanpizza/templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -98,7 +99,7 @@ DATABASES = {
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASS'),
         'HOST': '127.0.0.1',
-        'PORT': '5432', 
+        'PORT': '5432',
     },
     'legacy': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -179,7 +180,6 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }

@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='images',
-            field=models.ImageField(blank=True, default='', upload_to='project_pics'),
+            field=models.ImageField(
+                blank=True, default='', upload_to='project_pics'),
         ),
     ]

@@ -14,11 +14,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cart',
             name='shipping_address',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='shipping_address', to='store.ShippingAddress'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name='shipping_address',
+                to='store.ShippingAddress'),
         ),
         migrations.AlterField(
             model_name='cart',
             name='billing_address',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='billing_address', to='store.BillingAddress'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name='billing_address',
+                to='store.BillingAddress'),
         ),
     ]

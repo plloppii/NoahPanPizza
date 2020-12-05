@@ -16,11 +16,18 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='content',
-            field=ckeditor.fields.RichTextField(blank=True, null=True),
+            field=ckeditor.fields.RichTextField(
+                blank=True,
+                null=True),
         ),
         migrations.AlterField(
             model_name='project',
             name='tags',
-            field=taggit_autosuggest.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags'),
+            field=taggit_autosuggest.managers.TaggableManager(
+                blank=True,
+                help_text='A comma-separated list of tags.',
+                through='taggit.TaggedItem',
+                to='taggit.Tag',
+                verbose_name='Tags'),
         ),
     ]

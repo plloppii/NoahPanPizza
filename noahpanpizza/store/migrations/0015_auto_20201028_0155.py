@@ -13,11 +13,17 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='product',
             name='slug',
-            field=models.SlugField(blank=True, max_length=100, null=True),
+            field=models.SlugField(
+                blank=True,
+                max_length=100,
+                null=True),
         ),
         migrations.AlterField(
             model_name='product',
             name='thumbnail',
-            field=models.ImageField(blank=True, default='product/thumbnails/default.jpg', upload_to='product/thumbnails'),
+            field=models.ImageField(
+                blank=True,
+                default='product/thumbnails/default.jpg',
+                upload_to='product/thumbnails'),
         ),
     ]

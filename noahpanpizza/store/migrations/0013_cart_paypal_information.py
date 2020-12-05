@@ -14,6 +14,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cart',
             name='paypal_information',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, null=True),
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True,
+                null=True),
         ),
     ]

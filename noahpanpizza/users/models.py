@@ -4,6 +4,7 @@ from PIL import Image
 
 # Create your models here.
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='users/default.jpg', upload_to='users')
@@ -14,10 +15,7 @@ class Profile(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         img = Image.open(self.image.path)
-        if(img.height > 300 or img.width >300):
-            outputsize = (300,300)
+        if(img.height > 300 or img.width > 300):
+            outputsize = (300, 300)
             img.thumbnail(outputsize)
             img.save(self.image.path)
-            
-
-        
