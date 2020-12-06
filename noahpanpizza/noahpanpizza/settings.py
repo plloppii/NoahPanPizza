@@ -94,12 +94,12 @@ WSGI_APPLICATION = 'noahpanpizza.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'noahpanpizza',
+        'ENGINE': os.environ.get("DB_ENGINE", 'django.db.backends.postgresql'),
+        'NAME': os.environ.get("DB_NAME",'noahpanpizza'),
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASS'),
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'HOST': os.environ.get("DB_HOST",'127.0.0.1'),
+        'PORT': os.environ.get("DB_PORT",'5432'),
     },
     'legacy': {
         'ENGINE': 'django.db.backends.sqlite3',
