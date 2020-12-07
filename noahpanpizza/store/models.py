@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django_countries.fields import CountryField
 
-from django.utils import timezone
 
 # Create your models here.
 
@@ -158,4 +157,4 @@ class Cart(models.Model):
         super().save(*args, **kwargs)
 
     def ready_for_payment(self):
-        return (self.ordered == False and not self.is_empty())
+        return (self.ordered is False and not self.is_empty())

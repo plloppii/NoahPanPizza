@@ -95,11 +95,11 @@ WSGI_APPLICATION = 'noahpanpizza.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get("DB_ENGINE", 'django.db.backends.postgresql'),
-        'NAME': os.environ.get("DB_NAME",'noahpanpizza'),
+        'NAME': os.environ.get("DB_NAME", 'noahpanpizza'),
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASS'),
-        'HOST': os.environ.get("DB_HOST",'127.0.0.1'),
-        'PORT': os.environ.get("DB_PORT",'5432'),
+        'HOST': os.environ.get("DB_HOST", '127.0.0.1'),
+        'PORT': os.environ.get("DB_PORT", '5432'),
     },
     'legacy': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -160,7 +160,7 @@ LOGIN_REDIRECT_URL = 'store'
 LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

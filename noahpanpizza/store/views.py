@@ -205,7 +205,7 @@ class CheckoutSuccessPage(DetailView):
         if current_order:
             response["success"] = True
             tmp = json.loads(self.request.POST.get('value'))
-            tmp_pretty = json.dumps(tmp, indent=2)
+            # tmp_pretty = json.dumps(tmp, indent=2)
             current_order.paypal_information = tmp
             current_order.ordered = True
             current_order.ordered_date = timezone.now()
