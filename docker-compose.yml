@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+    web-dev:
+        build: ./noahpanpizza
+        command: python manage.py runserver 0.0.0.0:8000
+        volumes:
+            - ./noahpanpizza/:/usr/src/noahpanpizza/
+        ports:
+            - 8000:8000
+        env_file:
+            - ./.env.dev
+    db-dev:
+        image: postgres:12.4-alpine
+        volumes:
+            - postgres_data_dev:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_USER=django_user
+            - POSTGRES_PASSWORD=django_password
+            - POSTGRES_DB=noahpanpizza
+volumes:
+    postgres_data_dev:

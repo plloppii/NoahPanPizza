@@ -1,0 +1,6 @@
+#files to ignore when copying for Docker
+datamigration.json
+.vscode
+venv
+static
+media
