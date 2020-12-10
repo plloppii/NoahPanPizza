@@ -13,14 +13,9 @@ services:
             - 8000
         env_file:
             - ./.env.prod
-        depends_on:
-            - db
-    db:
-        image: postgres:12.0-alpine
-        volumes:
-            - postgres_data:/var/lib/postgresql/data/
-        env_file:
-            - ./.env.prod.db
+        extra_hosts:
+            db: 172.104.10.73
+        image: plloppii/web:latest
     nginx:
         build: ./nginx
         volumes:
@@ -30,7 +25,14 @@ services:
             - 1337:80
         depends_on:
             - web
+        image: plloppii/nginx:latest
+    # Use if dockerize database is necessary
+    # db:
+    #     image: postgres:12.0-alpine
+    #     volumes:
+    #         - postgres_data:/var/lib/postgresql/data/
+    #     env_file:
+    #         - ./.env.prod.db
 volumes:
-    postgres_data:
     static_volume:
     media_volume:

@@ -6,11 +6,18 @@ sudo -u postgres psql
 \l # list databases
 \dg # list roles
 CREATE DATABASE <database_name>
-CREATE USER admin_django WITH PASSWORD "<password>";
+CREATE USER admin_django WITH PASSWORD '<password>';
 DROP USER npan;
-
-
 
 # Starting Postgres
 pg_ctl -D postgres start
 psql postgres
+
+# Docker Container interface with External Database
+# add following to pg_hba.conf
+host    all             all             0.0.0.0/0               md5
+# add listen_address to postgresql.conf file
+listen_address = '172.17.0.0/16'
+# Add extra hosts line to docker-compose file
+extra_hosts:
+    db : <server ip address>
