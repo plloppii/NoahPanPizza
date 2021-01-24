@@ -37,6 +37,13 @@ class Product(models.Model):
                 exists = Product.objects.filter(slug=mslug).exists()
             self.slug = mslug
         super().save(*args, **kwargs)
+        
+    @property
+    def get_thumbnail_url(self):
+        if self.thumbnail and hasattr(self.thumbnail, 'url'):
+            return self.thumbnail.url
+        else:
+            return "/static/store/default.jpg"
 
 
 class ContactInfo(models.Model):
