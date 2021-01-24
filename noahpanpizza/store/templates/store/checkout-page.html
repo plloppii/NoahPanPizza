@@ -4,6 +4,9 @@
 
 {% block content %}
 
+{{ subtotal|json_script:"subtotal" }}
+{{ order.id|json_script:"order_id" }}
+
 <!--Main layout-->
 <div class="wow fadeIn">
     <!--Grid row-->

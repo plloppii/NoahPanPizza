@@ -87,15 +87,17 @@ $("#coupon-form").on("submit", (e) => {
     });
 })
 
-var subtotal = "{{ subtotal }}";
-//console.log(subtotal);
+var subtotal = JSON.parse(document.getElementById('subtotal').textContent);
+var order_id = JSON.parse(document.getElementById('order_id').textContent);
+// console.log(subtotal);
+// console.log(order_id);
 
 $("#loading-spinner").hide();
 
 paypal.Buttons({
     createOrder: function (data, actions) {
-        console.log(checkout_process.paypal_info);
         var order = checkout_process.paypal_info;
+        console.log(checkout_process.paypal_info);
         console.log(order.contact.first_name);
         var rtn_order = {
             intent: 'CAPTURE',
@@ -114,7 +116,7 @@ paypal.Buttons({
             },
             purchase_units: [{
                 amount: {
-                    value: '{{ subtotal }}',
+                    value: subtotal,
                     currency_code: 'USD'
                 }
             }],
@@ -148,14 +150,15 @@ paypal.Buttons({
                     $("#loading-spinner").toggle();
                     return actions.order.capture().then(function () {
                         //Send order information to page to update order with payment information. 
+                        console.log("/store/checkout-success/order/" + order_id)
                         $.ajax({
-                            url: "/store/checkout-success/order/{{order.id}}",
+                            url: "/store/checkout-success/order/" + order_id,
                             type: "POST",
                             data: { value: JSON.stringify(details) },
                             success: (rtn) => {
                                 if (!("error" in rtn)) {
                                     //alert('Transaction completed by ' + details.payer.name.given_name);
-                                    window.location = "/store/checkout-success/order/{{ order.id }}";
+                                    window.location = "/store/checkout-success/order/" + order_id;
                                 } else {
                                     alert("Unable to store order information: " + rtn["error"]);
                                 }

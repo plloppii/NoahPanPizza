@@ -175,20 +175,17 @@ class shipping_form(View):
             content_type="application/json"
         )
 
-
 class CheckoutPage(FormView):
     form_class = CheckoutForm
     template_name = "store/checkout-page.html"
-
     def get(self, request, *args, **kwargs):
         order = get_current_order(request)
+
         if order.ready_for_payment():
-            subtotal = sum([(item.quantity * item.product.price)
-                            for item in order.items.all()])
             return render(request,
                           'store/checkout-page.html',
                           {'order': order,
-                           'subtotal': subtotal,
+                           'subtotal': order.get_subtotal(),
                            'form': CheckoutForm()})
         else:
             return redirect('shopping-cart')
