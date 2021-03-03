@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import ProductList, ProductDetail, ShoppingCart, CheckoutPage, CheckoutSuccessPage, add_to_cart, delete_from_cart, contact_form, shipping_form, coupon_form
+from .views import ProductList, ProductDetail, ShoppingCart, CheckoutPage, CheckoutSuccessPage, add_to_cart, delete_from_cart, contact_form, shipping_form, coupon_form, process_order
 
 urlpatterns = [
     path(
@@ -30,6 +30,10 @@ urlpatterns = [
         'checkout-success/order/<int:pk>',
         CheckoutSuccessPage.as_view(),
         name='checkout-success'),
+    path(
+        'process-order/',
+        process_order.as_view(),
+        name='process-order'),
     path(
         'contact-form/',
         contact_form.as_view(),

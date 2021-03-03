@@ -67,6 +67,10 @@ class ContactForm(forms.Form):
         label="")
     phone_number = forms.CharField(widget=forms.TextInput(
         attrs={'placeholder': 'Phone Number'}), label="")
+    
+    def __str__(self):
+        return self.first_name + " " + self.last_name + \
+            "\n" + self.email + " " + self.phone_number
 
 
 class ShippingForm(forms.Form):

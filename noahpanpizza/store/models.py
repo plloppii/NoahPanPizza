@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django_countries.fields import CountryField
+from collections import defaultdict
 
 
 # Create your models here.
@@ -59,21 +60,23 @@ class ContactInfo(models.Model):
 # class PaymentInfo(models.Model):
 #     payment_id =models.CharField(max_length=100)
 
-
-class BillingAddress(models.Model):
+class Address(models.Model):
     address1 = models.CharField(max_length=100)
     address2 = models.CharField(max_length=100)
     country = CountryField(multiple=False)
     state = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     zipcode = models.CharField(max_length=5)
+    class Meta:
+        abstract=True
 
     def __str__(self):
         return self.address1 + self.address2 + "\n" + self.city + " " + \
             self.state + " " + self.zipcode + "\n" + self.country.code
 
-
-class ShippingAddress(BillingAddress):
+class ShippingAddress(Address):
+    pass
+class BillingAddress(Address):
     pass
 
 
@@ -89,24 +92,21 @@ class Coupon(models.Model):
         return self.coupon_code
 
 
+
 class CartItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    order = models.ForeignKey("Cart", on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField(default=1)
 
     def get_subtotal(self):
         return self.product.price * self.quantity
 
     def __str__(self):
-        return self.product.name
-        # return self.product.name + " OrderID:"+str(self.order.id)+" "+"
-        # Qty:"+str(self.quantity)
+        return self.product.name + " x"+str(self.quantity)
 
-    def save(self, *args, **kwargs):
-        print("CartItem Save called!")
-        super().save(*args, **kwargs)
-
+def get_cart_quantity(cartitems):
+    return sum([item.quantity for item in cartitems])
+def get_cart_subtotal(cartitems):
+    return sum([item.get_subtotal() for item in cartitems])
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

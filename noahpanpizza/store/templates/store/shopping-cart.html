@@ -22,7 +22,7 @@
             <h6 class="col-md-3 m-0 text-right">price</h6>
           </div>
           <hr>
-          {% for item in cart.items.all %}
+          {% for item in cart %}
           <li class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center col-md-6">
               <img class="col-md-3" src="{{ item.product.get_thumbnail_url }}" alt="{{ item.product.name }}.img">

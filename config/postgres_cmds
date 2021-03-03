@@ -5,9 +5,15 @@ sudo -u postgres psql
 
 \l # list databases
 \dg # list roles
+\dt # list tables
 CREATE DATABASE <database_name>
 CREATE USER admin_django WITH PASSWORD '<password>';
 DROP USER npan;
+
+# Resetting Database
+# Deleting migrations folder
+# python3 manage.py makemigrations <app_name>
+# python3 manage.py migrate <app_name>
 
 # Starting Postgres
 pg_ctl -D postgres start

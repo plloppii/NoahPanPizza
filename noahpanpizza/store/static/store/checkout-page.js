@@ -88,9 +88,7 @@ $("#coupon-form").on("submit", (e) => {
 })
 
 var subtotal = JSON.parse(document.getElementById('subtotal').textContent);
-var order_id = JSON.parse(document.getElementById('order_id').textContent);
 // console.log(subtotal);
-// console.log(order_id);
 
 $("#loading-spinner").hide();
 
@@ -144,21 +142,20 @@ paypal.Buttons({
         // This function captures the funds from the transaction.
         checkout_process.continue_to_next();
         return actions.order.get()
-            .then(function (details) {
-                console.log(details);
+            .then(function (paypal_info) {
+                console.log(paypal_info);
                 document.querySelector('#place-order').addEventListener('click', function () {
                     $("#loading-spinner").toggle();
                     return actions.order.capture().then(function () {
                         //Send order information to page to update order with payment information. 
-                        console.log("/store/checkout-success/order/" + order_id)
                         $.ajax({
-                            url: "/store/checkout-success/order/" + order_id,
+                            url: "/store/process-order/",
                             type: "POST",
-                            data: { value: JSON.stringify(details) },
+                            data: { "paypal_info": JSON.stringify(paypal_info) },
                             success: (rtn) => {
-                                if (!("error" in rtn)) {
+                                if ("success" in rtn) {
                                     //alert('Transaction completed by ' + details.payer.name.given_name);
-                                    window.location = "/store/checkout-success/order/" + order_id;
+                                    window.location = "/store/checkout-success/order/" + rtn["orderid"];
                                 } else {
                                     alert("Unable to store order information: " + rtn["error"]);
                                 }

@@ -142,26 +142,26 @@
 
             <!-- Cart -->
             <ul id="cart" class="list-group mb-3 z-depth-1">
-                {% for item in order.items.all %}
+                {% for item in cart %}
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <h6 class="my-0">{{item.product.name}} ({{item.quantity}})</h6>
                         <span class="text-muted">{{item.get_subtotal}}</span>
                     </li>
                 {% endfor %}
                 
-                {% if order.coupon is not None %}
+                {% if request.session.coupon %}
                     <li class="list-group-item d-flex justify-content-between bg-light">
                         <div>
                             <h6 class="my-0">Promo code</h6>
-                            <small id="coupon-list-name">{{order.coupon.coupon_code}}</small>
+                            <small id="coupon-list-name">{{request.session.coupon.code}}</small>
                         </div>
-                        <span id="coupon-list-discount" class="text-success">-{{order.coupon.discount}}</span>
+                        <span id="coupon-list-discount" class="text-success">-{{request.session.coupon.discount}}</span>
                     </li>
                 {% endif %}
 
                 <li class="list-group-item d-flex justify-content-between">
                     <span>Total (USD)</span>
-                    <strong>{{order.get_subtotal}}</strong>
+                    <strong>{{subtotal}}</strong>
                 </li>
             </ul>
             <!-- Cart -->
