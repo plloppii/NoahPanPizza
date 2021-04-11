@@ -82,3 +82,6 @@ sudo systemctl status apache2
 #Apache2 error logging
 sudo su 
 tail -n 100 /var/log/apache2/error.log
+
+#Using autopep8 to fix flake8 linter errors
+autopep8 --recursive --in-place --aggressive --aggressive .
