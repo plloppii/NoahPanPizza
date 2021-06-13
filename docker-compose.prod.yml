@@ -3,6 +3,7 @@ version: '3.7'
 services:
     web:
         image: plloppii/web:latest
+        platform: linux/x86_64
         build:
             context: ./noahpanpizza
             dockerfile: Dockerfile.prod
@@ -17,13 +18,11 @@ services:
         extra_hosts:
             db: 172.104.10.73
     nginx-proxy:
-        image: plloppii/nginx-proxy:latest
+        image: nginx-proxy/nginx-proxy:latest
         container_name: nginx-proxy
         ports:
             - 443:443
             - 80:80
-        build: nginx
-        restart: always
         volumes:
             - static_volume:/home/app/web/static
             - media_volume:/home/app/web/media
@@ -34,7 +33,6 @@ services:
             - /var/run/docker.sock:/tmp/docker.sock:ro
         depends_on:
             - web
-        network_mode: bridge 
     acme-companion:
         image: nginxproxy/acme-companion
         container_name: nginx-proxy-acme
