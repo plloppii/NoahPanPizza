@@ -26,7 +26,9 @@ services:
         volumes:
             - static_volume:/home/app/web/static
             - media_volume:/home/app/web/media
-            - vhost:/etc/nginx/vhost.d
+            - ${PWD}/nginx/nginx.conf:/etc/nginx/conf.d/custom.conf:ro
+            - ${PWD}/nginx/vhost.d:/etc/nginx/vhost.d
+
             - html:/usr/share/nginx/html
             - dhparam:/etc/nginx/dhparam
             - certs:/etc/nginx/certs:ro
@@ -52,6 +54,7 @@ services:
 volumes:
     static_volume:
     media_volume:
+    custom.conf:
     vhost:
     html:
     dhparam:
