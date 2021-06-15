@@ -66,6 +66,11 @@ sudo chmod -R 775 <project-name>/media
 
 sudo service apache2 restart
 
+#Enable apache2 on startup
+sudo update-rc.d apache2 disable
+#Disable apache2 on startup
+sudo update-rc.d -f  apache2 remove
+
 #Using Certibot for https
 https://github.com/CoreyMSchafer/code_snippets/blob/master/Django_Blog/snippets/apache-ubuntu-certbot.txt
 sudo certbot --apache
