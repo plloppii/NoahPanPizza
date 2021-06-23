@@ -7,10 +7,12 @@ from .models import get_cart_quantity
 
 def current_cart(request):
     total_items = 0
-    #if not request.user.is_authenticated:
+    # if not request.user.is_authenticated:
     if "cart" in request.session:
-        total_items= get_cart_quantity(deserialize_cart(get_serialized_cart(request)))
-    #else:
+        total_items = get_cart_quantity(
+            deserialize_cart(
+                get_serialized_cart(request)))
+    # else:
     #    cart = Cart.objects.filter(user=request.user, ordered=False)
     #    if cart.exists():
     #        total_items = cart[0].get_total_items()

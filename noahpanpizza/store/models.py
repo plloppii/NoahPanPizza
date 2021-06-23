@@ -38,7 +38,7 @@ class Product(models.Model):
                 exists = Product.objects.filter(slug=mslug).exists()
             self.slug = mslug
         super().save(*args, **kwargs)
-        
+
     @property
     def get_thumbnail_url(self):
         if self.thumbnail and hasattr(self.thumbnail, 'url'):
@@ -60,6 +60,7 @@ class ContactInfo(models.Model):
 # class PaymentInfo(models.Model):
 #     payment_id =models.CharField(max_length=100)
 
+
 class Address(models.Model):
     address1 = models.CharField(max_length=100)
     address2 = models.CharField(max_length=100)
@@ -67,15 +68,19 @@ class Address(models.Model):
     state = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     zipcode = models.CharField(max_length=5)
+
     class Meta:
-        abstract=True
+        abstract = True
 
     def __str__(self):
         return self.address1 + self.address2 + "\n" + self.city + " " + \
             self.state + " " + self.zipcode + "\n" + self.country.code
 
+
 class ShippingAddress(Address):
     pass
+
+
 class BillingAddress(Address):
     pass
 
@@ -92,7 +97,6 @@ class Coupon(models.Model):
         return self.coupon_code
 
 
-
 class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
@@ -101,12 +105,16 @@ class CartItem(models.Model):
         return self.product.price * self.quantity
 
     def __str__(self):
-        return self.product.name + " x"+str(self.quantity)
+        return self.product.name + " x" + str(self.quantity)
+
 
 def get_cart_quantity(cartitems):
     return sum([item.quantity for item in cartitems])
+
+
 def get_cart_subtotal(cartitems):
     return sum([item.get_subtotal() for item in cartitems])
+
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
