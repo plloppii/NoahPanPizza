@@ -1,0 +1,6 @@
+#sudo access into a docker container
+docker exec -u root -it 9231b33323f9 sh
+
+#copy media backup into docker container
+docker cp ../backup/media/. 9231b33323f9:/home/app/web/media/
+
